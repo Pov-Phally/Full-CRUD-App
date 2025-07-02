@@ -29,7 +29,7 @@ Backend/
 ### 1. Clone the repository
 
 ```sh
-git clone <your-repo-url>
+git clone <https://github.com/Pov-Phally/Full-CRUD-App.git>
 cd Backend
 ```
 
