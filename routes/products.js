@@ -1,8 +1,27 @@
 const router = require('express').Router();
 const { getPool, sql } = require('../db');
 
+// GET all /products
+router.get('/products', async (req, res) => {
+    const offset = parseInt(req.query.offset) || 0;
+    const limit = parseInt(req.query.limit) || 10;
 
-// GET /products by id or with pagination
+    const pool = await getPool();
+    const result = await pool.request()
+        .input('offset', sql.Int, offset)
+        .input('limit', sql.Int, limit)
+        .query(`
+      SELECT * FROM dbo.PRODUCTS
+      ORDER BY PRODUCTID
+      OFFSET @offset ROWS
+      FETCH NEXT @limit ROWS ONLY
+    `);
+
+    res.json(result.recordset);
+});
+
+
+// GET /products by id
 router.get('/', async (req, res) => {
     const pool = await getPool();
 
@@ -19,15 +38,8 @@ router.get('/', async (req, res) => {
     } else {
         const offset = parseInt(req.query.offset) || 0;
         const limit = parseInt(req.query.limit) || 10;
-        const result = await pool.request()
-            .input('offset', sql.Int, offset)
-            .input('limit', sql.Int, limit)
-            .query(`
-      SELECT * FROM dbo.PRODUCTS
-      ORDER BY PRODUCTID
-      OFFSET @offset ROWS
-      FETCH NEXT @limit ROWS ONLY
-    `);
+        const result = await pool.request().query
+            (`SELECT * FROM PRODUCTS`);
         return res.json(result.recordset);
     }
 });
