@@ -10,7 +10,7 @@ This is a Flutter-based application for managing products with full CRUD (Create
 * -Delete products.
 * -State management using provider.
 * -Debounce searchbar to filter products by name
-* -sort products by price and stock
+* -Sort products by price and stock
 * -Paginated API
 * -Export to PDF or CSV
 
