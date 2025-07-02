@@ -2,7 +2,8 @@
 
 This is a Flutter-based application for managing products with full CRUD (Create, Read, Update, Delete) functionality. The app uses the provider package for state management and includes screens for viewing, adding, and editing products.
 
-## Features
+ **Features**
+
 -View a list of products.
 -Add new products.
 -Edit existing products.
@@ -13,7 +14,8 @@ This is a Flutter-based application for managing products with full CRUD (Create
 -Paginated API
 -Export to PDF or CSV
 
-##Installation
+**Installation**
+
 Clone the repository:
 git clone https://github.com/Pov-Phally/full_crud_app.git
 Navigate to the project directory:
@@ -23,7 +25,8 @@ flutter pub get
 Run the app:
 flutter run
 
-##Dependencies
+**Dependencies**
+
 flutter
 http
 provider
