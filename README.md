@@ -34,6 +34,3 @@ Clone the repository:
 * path_provider
 * open_file
 * syncfusion_flutter_pdf
-
-**Screenshot**
-![Screenshot](https://github.com/Pov-Phally/Full-CRUD-App/blob/c9bb41a0df6c8c6de9a3f69405a03f906ee2e73c/ScreenShot/Screenshot_20250702_130743.png)
