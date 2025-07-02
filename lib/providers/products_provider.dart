@@ -24,7 +24,7 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
 
     final res = await http.get(
-      Uri.parse('$apiUrl?offset=$_offset&limit=$_limit'),
+      Uri.parse('$apiUrl/products?offset=$_offset&limit=$_limit'),
     );
 
     if (res.statusCode == 200) {

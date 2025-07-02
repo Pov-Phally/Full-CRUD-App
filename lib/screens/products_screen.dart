@@ -103,14 +103,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
               : Expanded(
                 child: RefreshIndicator(
                   onRefresh: () async {
-                    await prov.fetchProducts();
                     await prov.loadMore();
                   },
                   child: ListView.builder(
                     controller: _scrollController,
-                    itemCount: prov.filteredItems.length,
+                    itemCount: prov.filteredItems.length + 1,
                     itemBuilder: (_, i) {
-                      if (i == prov.filteredItems.length + 1) {
+                      if (i == prov.filteredItems.length) {
                         if (prov.hasMore) {
                           return const Center(
                             child: CircularProgressIndicator(),
