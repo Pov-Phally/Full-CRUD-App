@@ -18,7 +18,8 @@ class ProductProvider with ChangeNotifier {
   bool hasMore = true;
 
   Future<void> loadMore() async {
-    if (hasMore) return;
+    if (!hasMore || isLoading) return;
+
     isLoading = true;
     notifyListeners();
 
@@ -35,19 +36,15 @@ class ProductProvider with ChangeNotifier {
       if (newData.isEmpty || newData.length < _limit) {
         hasMore = false;
       }
-      //if data is already loaded, do not add again
-      if (_items.any(
-        (item) => newData.any((newItem) => newItem.id == item.id),
-      )) {
-        isLoading = false;
-        notifyListeners();
-        return;
+      for (var product in newData) {
+        if (!_filteredItems.any((item) => item.id == product.id)) {
+          _filteredItems.add(product);
+        }
       }
-
-      _items.addAll(newData);
       _offset += _limit;
+    } else {
+      hasMore = false;
     }
-
     isLoading = false;
     notifyListeners();
   }

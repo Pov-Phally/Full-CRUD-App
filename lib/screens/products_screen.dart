@@ -26,14 +26,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       productProvider.fetchProducts();
       productProvider.loadMore();
-
       _scrollController.addListener(_onScroll);
     });
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 200) {
+            _scrollController.position.maxScrollExtent - 200 &&
+        productProvider.hasMore &&
+        !productProvider.isLoading) {
       productProvider.loadMore();
     }
   }
@@ -66,7 +67,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     final prov = context.watch<ProductProvider>();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Products'),
@@ -83,45 +83,48 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: prov.fetchProducts,
-        child: Column(
-          children: [
-            SearchAndFilterBar(
-              searchController: searchController,
-              selectedSortOption: _selectedSortOption,
-              onSortOptionSelected: (option) {
-                setState(() {
-                  _selectedSortOption = option;
-                  _sortProducts(option);
-                });
-              },
-              onChanged: (value) {
-                context.read<ProductProvider>().filterProductsByName(value!);
-              },
-            ),
-            prov.isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : Expanded(
+      body: Column(
+        children: [
+          SearchAndFilterBar(
+            searchController: searchController,
+            selectedSortOption: _selectedSortOption,
+            onSortOptionSelected: (option) {
+              setState(() {
+                _selectedSortOption = option;
+                _sortProducts(option);
+              });
+            },
+            onChanged: (value) {
+              context.read<ProductProvider>().filterProductsByName(value!);
+            },
+          ),
+          prov.isLoading && prov.filteredItems.isEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : Expanded(
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    await prov.fetchProducts();
+                    await prov.loadMore();
+                  },
                   child: ListView.builder(
                     controller: _scrollController,
                     itemCount: prov.filteredItems.length,
                     itemBuilder: (_, i) {
-                      if (i == prov.filteredItems.length) {
+                      if (i == prov.filteredItems.length + 1) {
                         if (prov.hasMore) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
-                        } else {
-                          return const SizedBox.shrink();
+                        } else if (!prov.hasMore) {
+                          return const Center(child: Text('No more products'));
                         }
                       }
                       return ProductTile(product: prov.filteredItems[i]);
                     },
                   ),
                 ),
-          ],
-        ),
+              ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
